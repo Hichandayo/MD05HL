@@ -25,5 +25,6 @@ public class Contract {
     private Date startDate;
     private Date endDate;
     private Decimal contractValue;
+    @Enumerated(EnumType.STRING)
     private Status status;
 }

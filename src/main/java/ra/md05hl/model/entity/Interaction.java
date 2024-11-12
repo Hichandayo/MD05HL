@@ -21,7 +21,8 @@ public class Interaction {
     @JoinColumn(name = "employee_id")
     private Employee employeeId;
     private DateTime interactionDate;
+    @Enumerated(EnumType.STRING)
     private Type interactionType;
-    private String text;
+    private String notes;
 
 }

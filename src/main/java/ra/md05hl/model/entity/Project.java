@@ -21,5 +21,6 @@ public class Project {
     private String projectName;
     private Date startDate;
     private Date endDate;
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private StatusProject status;
 }
