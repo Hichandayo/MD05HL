@@ -22,7 +22,9 @@ public class Contract {
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employeeId;
+    @Temporal(TemporalType.DATE)
     private Date startDate;
+    @Temporal(TemporalType.DATE)
     private Date endDate;
     private Decimal contractValue;
     @Enumerated(EnumType.STRING)

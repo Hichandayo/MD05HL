@@ -20,6 +20,7 @@ public class Interaction {
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employeeId;
+    @Temporal(TemporalType.DATE)
     private DateTime interactionDate;
     @Enumerated(EnumType.STRING)
     private Type interactionType;

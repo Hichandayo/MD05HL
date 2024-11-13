@@ -1,9 +1,6 @@
 package ra.md05hl.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +19,7 @@ public class Employee {
     private String lastName;
     private String email;
     private String phoneNumber;
+    @Temporal(TemporalType.DATE)
     private Date hireDate;
     private String position;
 }

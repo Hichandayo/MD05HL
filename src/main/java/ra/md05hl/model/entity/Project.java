@@ -19,7 +19,9 @@ public class Project {
     @JoinColumn(name = "contract_id")
     private Contract contractId;
     private String projectName;
+    @Temporal(TemporalType.DATE)
     private Date startDate;
+    @Temporal(TemporalType.DATE)
     private Date endDate;
     @Enumerated(EnumType.STRING)
     private StatusProject status;
