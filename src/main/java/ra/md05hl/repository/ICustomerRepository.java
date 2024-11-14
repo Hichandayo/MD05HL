@@ -1,4 +1,4 @@
-package ra.md05hl;
+package ra.md05hl.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

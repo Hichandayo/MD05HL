@@ -1,2 +1,4 @@
-package ra.md05hl.service;public class DepartmentService {
+package ra.md05hl.service;
+
+public class DepartmentService {
 }
