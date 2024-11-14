@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Danh sach </h1>
+<a href="/account/add">Them moi san pham</a>
+<table>
+    <tr>
+        <th>STT</th>
+        <th>Name</th>
+        <th>Stock</th>
+        <th>Created</th>
+        <th colspan="2">status</th>
+    </tr>
+    <tr th:each="pro,iter: ${products}">
+        <td th:text="${iter.count}"></td>
+        <td th:text="${pro.name}"></td>
+        <td th:text="${pro.stock}"></td>
+        <td th:text="${pro.created}"></td>
+        <td><a th:href="|/product/edit/${pro.id}|">Edit</a></td>
+        <td><a onclick="return confirm('ban co chac chan muon xoa ko')" th:href="|/product/delete/${pro.id}|">Delete</a></td>
+    </tr>
+</table>
+</body>
+</html>
