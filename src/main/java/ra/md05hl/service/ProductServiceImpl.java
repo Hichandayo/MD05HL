@@ -1,6 +1,8 @@
-package ra.md05hl;
+package ra.md05hl.service;
 
 import lombok.RequiredArgsConstructor;
+import ra.md05hl.model.entity.Product;
+import ra.md05hl.repository.IProductRepository;
 
 import java.util.List;
 @RequiredArgsConstructor

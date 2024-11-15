@@ -1,4 +1,4 @@
-package ra.md05hl;
+package ra.md05hl.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
