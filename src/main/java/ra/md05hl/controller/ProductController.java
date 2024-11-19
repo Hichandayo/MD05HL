@@ -24,7 +24,7 @@ public class ProductController {
         List<Product> products = productService.getAll();
         return ResponseEntity.ok(products);
     }
-    // lấy tất cả danh sách sp có trạng = true
+    // lấy tất cả danh sách sp có trạng thai = true
     @GetMapping("/active")
     public ResponseEntity<List<Product>> getProductsByStatusIsTrue(){
         List<Product> products = productService.getAllByStatusIsTrue();
