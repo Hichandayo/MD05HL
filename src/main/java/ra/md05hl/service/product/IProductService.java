@@ -14,7 +14,7 @@ public interface IProductService {
     ResponseDto<List<Products>> findAll();
     ResponseDto<Products> findById(Long id)throws NotFoundElementException;
     ResponseDto<Products> add(FormProduct formProduct);
-    Products update(Products products, Long id);
+    ResponseDto<Products> update(Products products, Long id);
     ResponseDto<List<Products>> findAllProductByCategoryId(Long categoryId);
     ResponseDto<List<ProductDto>> getAllByStatusIsTrue();
     Page<Products> searchProducts(String keyword, Pageable pageable);

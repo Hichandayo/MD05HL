@@ -3,6 +3,7 @@ package ra.md05hl.service.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ra.md05hl.exception.DomainException;
 import ra.md05hl.exception.NotFoundElementException;
 import ra.md05hl.model.dto.request.ChangePasswordRequest;
+import ra.md05hl.model.dto.response.ResponseDto;
 import ra.md05hl.model.entity.Roles;
 import ra.md05hl.model.entity.Users;
 import ra.md05hl.repository.IRoleRepository;
@@ -19,24 +21,26 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService {
+public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final IRoleRepository roleRepository;
     @Override
-    public Users findById(Long userId) throws NotFoundElementException {
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundElementException("Could not found Id"));
+    public ResponseDto<Users> findById(Long userId) throws NotFoundElementException {
+        Users users = userRepository.findById(userId).orElseThrow(() -> new NotFoundElementException("User Id not Found"));
+        return new ResponseDto<>(200, HttpStatus.OK,users);
     }
 
     @Override
-    public Users findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> DomainException.notFound(email));
+    public ResponseDto<Users> findByEmail(String email) {
+        Users users = userRepository.findByEmail(email).orElseThrow(() -> DomainException.notFound(email));
+        return new ResponseDto<>(200,HttpStatus.OK,users);
     }
 
     @Override
-    public Page<Users> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public ResponseDto<List<Users>> findAll() {
+        List<Users> users = userRepository.findAll();
+        return new ResponseDto<>(200,HttpStatus.OK,users);
     }
 
     @Override
@@ -65,7 +69,7 @@ public class UserService implements IUserService {
     @Override
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Users user = findByEmail(userDetails.getUsername());
+        ResponseDto<Users> user = findByEmail(userDetails.getUsername());
 
         Boolean checkOldPasswor = passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword());
         if(!checkOldPasswor) {
@@ -76,26 +80,26 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Users lockUser(Long userId) {
+    public ResponseDto<Users> lockUser(Long userId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setStatus(false);
         return userRepository.save(user);
     }
 
     @Override
-    public Users unlockUser(Long userId) {
+    public ResponseDto<Users> unlockUser(Long userId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setStatus(true);
         return userRepository.save(user);
     }
 
     @Override
-    public List<Roles> getRoles() {
+    public ResponseDto<List<Roles>> getRoles() {
         return roleRepository.findAll();
     }
 
     @Override
-    public Users addRoleToUser(Long userId, Long roleId) {
+    public ResponseDto<Users> addRoleToUser(Long userId, Long roleId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Roles role = roleRepository.findById(roleId).orElseThrow(() -> new RuntimeException("Role not found"));
         user.getRolesSet().add(role);
@@ -103,7 +107,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Users removeRoleFromUser(Long userId, Long roldId) {
+    public ResponseDto<Users> removeRoleFromUser(Long userId, Long roldId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Roles role = roleRepository.findById(roldId).orElseThrow(() -> new RuntimeException("Role not found"));
         user.getRolesSet().remove(role);

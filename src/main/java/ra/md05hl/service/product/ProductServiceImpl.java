@@ -1,5 +1,6 @@
 package ra.md05hl.service.product;
 
+import com.google.api.Http;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import ra.md05hl.exception.NotFoundElementException;
 import ra.md05hl.model.dto.request.FormProduct;
 import ra.md05hl.model.dto.response.ProductDto;
 import ra.md05hl.model.dto.response.ResponseDto;
+import ra.md05hl.model.entity.Categories;
 import ra.md05hl.model.entity.Products;
 import ra.md05hl.repository.IProductRepository;
 
@@ -48,6 +50,9 @@ public class ProductServiceImpl implements IProductService {
                 .image(request.getImage().toString())
                 .price(request.getPrice())
                 .description(request.getDescription())
+                .categories(Categories.builder()
+                        .categoryId(request.getCategoryId())
+                        .build())
                 .status(true)
                 .build();
         Products newProduct = productRepository.save(product);
@@ -55,9 +60,10 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public Products update(Products products, Long id) {
+    public ResponseDto<Products> update(Products products, Long id) {
         products.setProductId(id);
-        return productRepository.save(products);
+        Products save = productRepository.save(products);
+        return new ResponseDto<>(200, HttpStatus.OK,save);
     }
 
     @Override

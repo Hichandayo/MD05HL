@@ -15,7 +15,7 @@ public interface ICategoryService {
     ResponseDto<List<Categories>> findAll();
     ResponseDto<Categories> findById(Long id)throws NotFoundElementException;
     ResponseDto<Categories> add(FormCategory formCategory);
-    Categories update(Categories categories, Long id);
+    ResponseDto<Categories> update(Categories categories, Long id);
     Page<Categories> searchByName(String name, Pageable pageable);
     void remove(Long id);
 }

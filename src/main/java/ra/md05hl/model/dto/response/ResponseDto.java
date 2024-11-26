@@ -13,4 +13,6 @@ public class ResponseDto<T> {
     private int code;
     private HttpStatus message;
     private T data;
+
+
 }

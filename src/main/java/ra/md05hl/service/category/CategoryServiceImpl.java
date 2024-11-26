@@ -49,9 +49,10 @@ public class CategoryServiceImpl implements ICategoryService {
 
 
     @Override
-    public Categories update(Categories categories, Long id) {
+    public ResponseDto<Categories> update(Categories categories, Long id) {
         categories.setCategoryId(id);
-        return categoryRepository.save(categories);
+        Categories save = categoryRepository.save(categories);
+        return new ResponseDto<>(200,HttpStatus.OK,save);
     }
 
     @Override
