@@ -17,24 +17,28 @@ import java.util.List;
 public class UserDetailsServiceCustom implements UserDetailsService {
     @Autowired
     private IUserRepository userRepository;
-
+    // chứa pt loadUserByUsername
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users userInfo = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("username not found"));
-        UserDetailsCustom detailCustom = new UserDetailsCustom();
-        detailCustom.setUsername(userInfo.getUsername());
-        detailCustom.setId(userInfo.getId());
-        detailCustom.setPassword(userInfo.getPassword());
-        detailCustom.setStatus(userInfo.getStatus());
-        detailCustom.setRole(userInfo.getRole());
-        detailCustom.setFullName(userInfo.getFullName());
-        // biến đổi từ ROLE Enum -> ROle GrandAuthority
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        GrantedAuthority role = new SimpleGrantedAuthority(userInfo.getRole().getRoleName().name());
-        authorities.add(role);
-
-        detailCustom.setAuthorities(authorities);
-        return detailCustom;
+        Users users = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+        //bieensn đổi thanh UserDetails
+        // biến đổi quyên
+        List<? extends GrantedAuthority> authorities = users
+                .getRolesSet()
+                .stream().map(role-> new SimpleGrantedAuthority(role.getRoleName().name()))
+                .toList();
+        UserDetails userDetails =  UserDetailsCustom.builder()
+                .id(users.getId())
+                .email(users.getEmail())
+                .password(users.getPassword())
+                .fullName(users.getFullName())
+                .phone(users.getPhone())
+                .sex(users.getSex())
+                .address(users.getAddress())
+                .dateOfBirth(users.getDateOfBirth())
+                .status(users.getStatus())
+                .authorities(authorities)
+                .build();
+        return userDetails;
     }
 }
-

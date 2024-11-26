@@ -19,7 +19,7 @@ import java.util.Map;
 public class DeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-       //xu ly ngoai le sinh ra
+       //xử lý ngoại lệ sinh ra
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null ){
             log.warn("User : " + auth.getName() + "attempted to access the protected URL : ");

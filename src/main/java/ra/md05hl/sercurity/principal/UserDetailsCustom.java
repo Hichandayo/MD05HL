@@ -1,23 +1,43 @@
 package ra.md05hl.sercurity.principal;
 
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ra.md05hl.model.entity.Users;
 
+import java.time.LocalDate;
 import java.util.Collection;
-@Setter
-public class UserDetailsCustom extends Users implements UserDetails {
-
-    private  Collection<? extends GrantedAuthority> authorities;
+@Builder
+@Data
+public class UserDetailsCustom implements UserDetails {
+    private Long id;
+    private String email;
+    private String password;
+    private String fullName;
+    private String phone;
+    private Boolean sex;
+    private LocalDate dateOfBirth;
+    private String address;
+    private Boolean status;
+    private Collection<? extends GrantedAuthority> authorities;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
     }
 
     @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return UserDetails.super.isAccountNonExpired();
     }
 
     @Override
@@ -32,6 +52,6 @@ public class UserDetailsCustom extends Users implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.status;
     }
 }

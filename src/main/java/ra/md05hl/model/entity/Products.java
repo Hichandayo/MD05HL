@@ -1,9 +1,6 @@
 package ra.md05hl.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,15 +12,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Product {
+public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long productId;
     private String name;
     private String description;
-    private int price;
+    private Double price;
     private String image;
-    @PositiveOrZero// khong duoc be hon 0
     private int stock;
     private boolean status;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Categories categories;
 }

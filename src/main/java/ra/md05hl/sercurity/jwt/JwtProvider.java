@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ra.md05hl.sercurity.principal.UserDetailsCustom;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -14,53 +13,51 @@ import java.util.Date;
 @Component
 public class JwtProvider { // Tao và giải mã token
     @Value("${jwt.expiration-date}")
-    private Long EXPIRATION;
+    private Long expiredDate;
     @Value("${jwt.secret-key}")
-    private String SECRET_KEY;
+    private String secretKey;
     // tạo token
     // validate token
     // giải mã token
     // tạo accessToken : 1 ngày
-    public String generateAccessToken(UserDetailsCustom detailCustom){
-        return Jwts.builder().setSubject(detailCustom.getUsername()).claim("role",detailCustom.getAuthorities())
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(Instant.now().plus(EXPIRATION, ChronoUnit.MILLIS)))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+    public String generateAccessToken(String name) {
+        Date today = new Date();
+        return Jwts.builder().setSubject(name)// mã hóa username
+                .setIssuedAt(today)
+                .setExpiration(new Date(today.getTime() + expiredDate))
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .compact();
     }
-    public String generateRefreshToken(UserDetailsCustom detailCustom){
-        return Jwts.builder().setSubject(detailCustom.getUsername()).claim("role",detailCustom.getAuthorities())
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(Instant.now().plus(EXPIRATION * 10, ChronoUnit.MILLIS)))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+    public String generateRefreshToken(String name) {
+        Date today = new Date();
+        return Jwts.builder().setSubject(name)// mã hóa username
+                .setIssuedAt(today)
+                .setExpiration(new Date(today.getTime() + expiredDate*10))
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .compact();
     }
-
 
     // validate token
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
-        } catch (SignatureException e) {
-            log.info("Invalid JWT signature.");
-            log.trace("Invalid JWT signature trace: {}", e);
-        } catch (MalformedJwtException e) {
-            log.info("Invalid JWT token.");
-            log.trace("Invalid JWT token trace: {}", e);
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token.");
-            log.trace("Expired JWT token trace: {}", e);
+            log.error("JWT: message error expired:", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token.");
-            log.trace("Unsupported JWT token trace: {}", e);
+            log.error("JWT: message error unsupported:", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("JWT: message error not formated:", e.getMessage());
+        } catch (SignatureException e) {
+            log.error("JWT: message error signature not math:", e.getMessage());
         } catch (IllegalArgumentException e) {
-            log.info("JWT token compact of handler are invalid.");
-            log.trace("JWT token compact of handler are invalid trace: {}", e);
+            log.error("JWT: message claims empty or argument invalid: ", e.getMessage());
         }
         return false;
     }
 
     // giải mã lây ra username
     public String getUserNameFromToken(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 }
